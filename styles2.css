@@ -1,0 +1,109 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #cde0f0;
+}
+
+.hide {
+    display: none;
+}
+
+#board {
+    position: relative;
+    transform: translate(65%, 45%) rotate(-25deg) skew(45deg);
+    width: 384px;
+    height: 392px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+}
+
+.pos {
+    display: flexbox;
+    width: 120px;
+    height: 90px;
+    outline: 1px solid brown;
+    border-radius: 30px;
+    margin: 4px;
+}
+
+.unit {
+    position: absolute;
+    transform: rotate(35deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
+    font-size: 100px;
+}
+
+.unit1 {
+    left: 90px;
+    top: -67px;
+}
+
+.unit2 {
+    left: 214px;
+    top: -67px;
+}
+
+.unit3 {
+    left: 338px;
+    top: -67px;
+}
+
+.unit4 {
+    left: 90px;
+    top: 32px;
+}
+
+.unit5 {
+    left: 214px;
+    top: 32px;
+}
+
+.unit6 {
+    left: 338px;
+    top: 32px;
+}
+
+.sword {
+    position: absolute;
+    transform: rotate(214deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
+    font-size: 100px;
+}
+
+.sword1 {
+    left: 67px;
+    top: -91px;
+}
+
+.sword2 {
+    left: 191px;
+    top: -91px;
+}
+
+.sword3 {
+    left: 315px;
+    top: -91px;
+}
+
+.sword4 {
+    left: 67px;
+    top: 10px;
+}
+
+.sword5 {
+    left: 191px;
+    top: 10px;
+}
+
+.sword6 {
+    left: 315px;
+    top: 10px;
+}
+
+.enemy {
+    position: absolute;
+    transform: rotate(35deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
+    font-size: 100px;
+    top: 232px;
+    left: 175px;
+}

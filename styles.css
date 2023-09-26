@@ -5,7 +5,11 @@ body {
     background: #dadada;
 }
 
-#board {
+.hide {
+    display: none;
+}
+
+#board- {
     display: inline-flex;
     flex-wrap: wrap;
     position: relative;

@@ -54,7 +54,7 @@ function refreshGameBoard() {
     newCards.forEach(card => gameBoard.appendChild(card));
 }
 
-refreshGameBoard();
+// refreshGameBoard();
 
 randomizer.addEventListener('click', () => {
     refreshGameBoard();
