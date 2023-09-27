@@ -11,99 +11,138 @@ body {
 
 #board {
     position: relative;
-    transform: translate(65%, 45%) rotate(-25deg) skew(45deg);
-    width: 384px;
-    height: 392px;
+    transform: translate(63%, 45%) rotate(-25deg) skew(45deg);
+    width: 500px;
+    height: 400px;
     display: inline-flex;
     flex-wrap: wrap;
-    border: 1px solid black;
+    /* border: 1px solid black; */
+}
+
+#game-field {
+    position: absolute;
+    transform: translate(0%, 196px);
+    width: 870px;
+    height: 354px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    /* border: 1px solid black; */
+    z-index: 10;
 }
 
 .pos {
     display: flexbox;
-    width: 120px;
-    height: 90px;
-    outline: 1px solid brown;
-    border-radius: 30px;
-    margin: 4px;
+    width: 150px;
+    height: 100px;
+    /* outline: 1px solid brown; */
+    /* border-radius: 30px; */
+    /* margin: 4px; */
 }
 
-.unit {
+/* textures layer ------------------------------ */
+
+.pixel {
     position: absolute;
-    transform: rotate(35deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
-    font-size: 100px;
 }
 
-.unit1 {
-    left: 90px;
-    top: -67px;
+.sprite-container {
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    transform: scale(6);
 }
 
-.unit2 {
-    left: 214px;
-    top: -67px;
+.sprite-container2 {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    transform: scale(10);
 }
 
-.unit3 {
-    left: 338px;
-    top: -67px;
+.sprite, .unit-sprites {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: pixelated; 
 }
 
-.unit4 {
-    left: 90px;
-    top: 32px;
+.unit-sprites {
+    width: 256px;
+    height: 448px;
 }
 
-.unit5 {
-    left: 214px;
-    top: 32px;
+.terrain-sprites {
+    width: 320px;
+    height: 320px;
 }
 
-.unit6 {
-    left: 338px;
-    top: 32px;
+.terrain {
+    background-image: url('FullTileset.png'); 
+    background-position: -16px -0px;
 }
 
-.sword {
-    position: absolute;
-    transform: rotate(214deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
-    font-size: 100px;
+.hero {
+    background-image: url('LanceKnight_Blue.png'); 
+    background-position: -0px -0px;
 }
-
-.sword1 {
-    left: 67px;
-    top: -91px;
-}
-
-.sword2 {
-    left: 191px;
-    top: -91px;
-}
-
-.sword3 {
-    left: 315px;
-    top: -91px;
-}
-
-.sword4 {
-    left: 67px;
-    top: 10px;
-}
-
-.sword5 {
-    left: 191px;
-    top: 10px;
-}
-
-.sword6 {
-    left: 315px;
-    top: 10px;
+.hero-die {
+    background-image: url('LanceKnight_Blue.png'); 
+    background-position: -32px -256px;
 }
 
 .enemy {
-    position: absolute;
-    transform: rotate(35deg) rotateZ(335deg) skew(315deg) skewY(18deg); 
-    font-size: 100px;
-    top: 232px;
-    left: 175px;
+    background-image: url('LanceKnight_Red.png'); 
+    /* background-position: -32px -256px; */
+    background-position: -0px -320px;
+}
+
+.pos-hero1 {
+    top: 115px;
+    left: 110px;
+}
+.pos-hero2 {
+    top: 60px;
+    left: 230px;
+
+}
+.pos-hero3 {
+    top: 5px;
+    left: 345px;
+
+}
+.pos-hero4 {
+    top: 180px;
+    left: 220px;
+}
+.pos-hero5 {
+    top: 125px;
+    left: 340px;
+}
+.pos-hero6 {
+    top: 70px;
+    left: 460px;
+}
+
+.pos-enemy1 {
+    top: 260px;
+    left: 495px;
+}
+.pos-enemy2 {
+    top: 205px;
+    left: 615px;
+}
+.pos-enemy3 {
+    top: 150px;
+    left: 735px;
+}
+.pos-enemy4 {
+    top: 115px;
+    left: 110px;
+}
+.pos-enemy5 {
+    top: 115px;
+    left: 110px;
+}
+.pos-enemy6 {
+    top: 115px;
+    left: 110px;
 }
