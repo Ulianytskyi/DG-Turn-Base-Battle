@@ -1,0 +1,93 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #cde0f0;
+}
+
+.hide {
+    display: none;
+}
+
+#game-field {
+    width: 800px;
+    height: 550px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+    
+}
+
+.sprite-container {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    transform: scale(6);
+    z-index: 10;
+}
+
+.sprite {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: pixelated; 
+    width: 256px;
+    height: 448px;
+}
+
+.hero { background-image: url('LanceKnight_Blue.png'); }
+.hero-die { background-position: -32px -256px; }
+
+.enemy {
+    background-image: url('LanceKnight_Red.png'); 
+    /* background-position: -32px -256px; (death) */
+    background-position: -32px -320px;
+}
+
+.idle0 {background-position: -0px -0px;}
+.idle1 {background-position: -32px -0px;}
+.idle2 {background-position: -64px -0px;}
+.idle3 {background-position: -96px -0px;}
+
+.pos-hero1 { top: 200px; left: 100px; }
+.pos-hero2 { top: 150px; left: 200px; }
+.pos-hero3 { top: 100px; left: 300px; }
+.pos-hero4 { top: 270px; left: 120px; }
+.pos-hero5 { top: 220px; left: 220px; }
+.pos-hero6 { top: 170px; left: 320px; }
+
+.pos-enemy1 { top: 390px; left: 390px; transform: scale(9);}
+
+#board {
+    /* transform: translate(0%, 0%) rotate(0deg) skew(65deg); */
+    position: relative;
+    left: 0px;
+    width: 500px;
+    height: 500px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+}
+
+.terrain-sprite-container {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    overflow: hidden;
+    transform: scale(9);
+}
+
+.terrain-sprite {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: pixelated;
+    width: 320px;
+    height: 320px;
+    background-image: url('FullTileset.png'); 
+    background-position: -16px -0px;
+}
+
+.pos-ter0 {
+    margin-left: 100px;
+    /* transform: translate(63%, 45%) rotate(-25deg) skew(45deg) scale(6); */
+}
