@@ -8,17 +8,6 @@ export let unitCoords = [
     {x : 150, y : 450}, {x : 250, y : 450}, {x : 350, y : 450},
 ]
 
-let unitStats = [
-    {img: 'X', 
-    name: 'Name', 
-    quote: 'Quote', 
-    level: '1', 
-    xp: 0, 
-    hp: 75, 
-    damage: 55, 
-    hitChance: 80}
-]
-
 let personsName = [
     'Ugre', 'Indulm', 'Tezi', 'Dizu', 'Zathmen', 
     'Tendozak', 'Hidruch', 'Tirdurg', 'Tigraum', 
@@ -48,25 +37,71 @@ function shuffleArray(array) {
     }
 }
 
-function generatePerson(value) {
+function generateUnitInformation(value) {
     const units = [];
     for (let i = 0; i < value; i++) {
-        const unit = document.createElement('div');
-        unit.className = 'unit';
-        unit.innerHTML = `<div class="unit-title">${personsName[i]}</div>`;
-        unit.innerHTML += `<div class="unit-hp">10</div>`;
-        unit.innerHTML += `<div class="unit-img">${personsIcons[i]}</div>`;
-        unit.innerHTML += `<div class="unit-quote">${personsQuotes[i]}</div>`;
-        units.push(unit);
+
+        units[i] = {};
+        units[i].img = personsIcons[i];
+        units[i].name = personsName[i];
+        units[i].quote = personsQuotes[i];
+        units[i].level = 1;
+        units[i].currXp = 0;
+        units[i].maxXp = 100;
+        units[i].currHp = 75;
+        units[i].maxHp = 75;
+        units[i].attack = 'Spear';
+        units[i].damage = 55;
+        units[i].hitChance = 80;
+        units[i].initiative = 60;
+        units[i].reach = 'Any unit';
+        units[i].targets = 1;
+        
     }
     return units;
 }
 
-export function generateUnitsArray(value) {
+function generateUnitBase(value) {
     shuffleArray(personsName);
     shuffleArray(personsQuotes);
     shuffleArray(personsIcons);
     
-    const unitsArray = generatePerson(value);
+    const unitsArray = generateUnitInformation(value);
     return unitsArray;
+}
+
+function makeInformationCard(value) {
+
+    let unitBase = generateUnitBase(value);
+
+    const unitCards = [];
+    for (let i = 0; i < value; i++) {
+        const unit = document.createElement('div');
+        unit.className = 'unit';
+        unit.innerHTML = `<div class="unit-img">${unitBase[i].img}</div>`;
+        unit.innerHTML += `<div class="unit-name">${unitBase[i].name}</div>`;
+        unit.innerHTML += `<div class="unit-quote">${unitBase[i].quote}</div>`;
+
+        unit.innerHTML += `<div class="unit-level">Level: ${unitBase[i].level}</div>`;
+        unit.innerHTML += `<div class="unit-xp">XP: ${unitBase[i].currXp}/${unitBase[i].maxXp}</div>`;
+        unit.innerHTML += `<div class="unit-hp">HP: ${unitBase[i].currHp}/${unitBase[i].maxHp}</div>`;
+
+        unit.innerHTML += `<div class="unit-attack">Attack: ${unitBase[i].attack}</div>`;
+        unit.innerHTML += `<div class="unit-damage">Damage: ${unitBase[i].damage}</div>`;
+        unit.innerHTML += `<div class="unit-hit-chance">Chance to hit: ${unitBase[i].hitChance}%</div>`;
+
+        unit.innerHTML += `<div class="unit-initiative">Initiative: ${unitBase[i].initiative}</div>`;
+        unit.innerHTML += `<div class="unit-reach">Reach: ${unitBase[i].reach}</div>`;
+        unit.innerHTML += `<div class="unit-targets">Targets: ${unitBase[i].targets}</div>`;
+
+        unitCards.push(unit);
+    }
+    return [unitCards, unitBase];
+}
+
+export function generateUnitsCardArray(value) {
+
+    const unitCardsArray = makeInformationCard(value);
+
+    return unitCardsArray;
 }
