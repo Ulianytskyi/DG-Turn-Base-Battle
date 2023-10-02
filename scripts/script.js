@@ -1,3 +1,21 @@
+// cheat mode begins -----------------
+let cheatOn = false;
+const cheatBtn = document.getElementById('cheat');
+cheatBtn.style.backgroundColor = '#6effba';
+cheatBtn.addEventListener('click', ()=> {
+    if (cheatOn) {
+        cheatOn = false;
+        cheatBtn.textContent = 'One punch mode off';
+        cheatBtn.style.backgroundColor = '#6effba';
+    } else {
+        cheatOn = true;
+        cheatBtn.textContent = 'One punch mode on';
+        cheatBtn.style.backgroundColor = '#ffa3fb';
+    }
+});
+
+// cheat mode end --------------------
+
 const gameField = document.getElementById('game-field');
 
 import { unitCoords } from "../scripts/unit-settings.js";
@@ -23,7 +41,7 @@ function createUnits(value, type) {
        
         const hitText = document.createElement('div');
         hitText.className = 'unit-hit-text hide';
-        hitText.innerHTML = `HIT`;
+        hitText.innerHTML = `0`;
 
         unit1.appendChild(healthBar);
         unit1.appendChild(hitText);
@@ -42,6 +60,8 @@ heroUnits.forEach(unit => gameField.appendChild(unit));
 const enemyUnits = createUnits(3, 'enemy');
 enemyUnits.forEach(unit => gameField.appendChild(unit));
 
+let heroPoints = heroUnits.length;
+let enemyPoints = heroUnits.length;
 
 
 // check unit ------------------------------------------------------------
@@ -184,22 +204,23 @@ function takeDamageValue(u1) {
     let u1Attack = unitBase[checkUnit(u1.id)].damage;
     let hitChance = unitBase[checkUnit(u1.id)].hitChance;
     let u1Damage = Math.floor((Math.random() * hitChance) / 100 * u1Attack);
-
-    return u1Damage;
+    if (cheatOn) {
+        return 100;
+    } else {
+        return u1Damage;
+    }
 }
 
 function calculateDamage(damage, u2) {
     let u2Hp = unitBase[checkUnit(u2.id)].currHp;
     u2Hp -= damage;
     unitBase[checkUnit(u2.id)].currHp = u2Hp;
-    // u2.children[0].innerText = `${unitBase[checkUnit(u2.id)].currHp}/${unitBase[checkUnit(u2.id)].maxHp}`;
-    // setHealthBar(unitBase[checkUnit(u2.id)].currHp);
-    console.log(healthValue);
+    setHealthBar(unitBase[checkUnit(u2.id)].currHp, u2.querySelector('.health-value'));
 }
 
 function setHealthBar(health, healthBar) {
     const percentage = (health / 75) * 100;
-    const clampedHealth = Math.min(Math.max(percentage, 0), 100);
+    const clampedHealth = Math.floor(Math.min(Math.max(percentage, 0), 100));
     healthBar.style.width = clampedHealth + "%";
 }
 
@@ -207,12 +228,52 @@ function checkDeath(u2) {
     if (unitBase[checkUnit(u2.id)].currHp <= 0) {
         unitBase[checkUnit(u2.id)].currHp = 0;
         u2.classList.add('die');
-        u2.children[0].innerText = `0/${unitBase[checkUnit(u2.id)].maxHp}`;
         unitBase[checkUnit(u2.id)].img = '☠️';
         unitBase[checkUnit(u2.id)].name = `${unitBase[checkUnit(u2.id)].name} <span class='die-status'>[dead]</span>`;
+        
+        if (checkUnit(u2.id) < 6) {
+            heroPoints -= 1;
+            console.log('Hero Points', heroPoints);
+        } else {
+            enemyPoints -= 1;
+            console.log('Enemy Points', enemyPoints);
+        }
+
+        if (heroPoints == 0) {
+            gameOverScreen('Enemies');
+            enemies.forEach(enemy => {
+                if (!enemy.classList.contains('die') && unitBase[checkUnit(enemy.id)].currHp !== 0) {
+                    enemy.classList.add('win-pose');
+                    enemy.style.scale = 1.3;
+                }
+            });
+        } else if (enemyPoints == 0) {
+            gameOverScreen('Heroes');
+            heroes.forEach(hero => {
+                if (!hero.classList.contains('die') && unitBase[checkUnit(hero.id)].currHp !== 0) {
+                    hero.classList.add('win-pose');
+                    hero.style.scale = 1.3;
+                }
+            });
+        }
     }
 }
 
+function gameOverScreen(winner) {
+    const finalScreen = document.createElement('div');
+    finalScreen.id = 'final-screen';
+    finalScreen.innerHTML = `${winner} <br>win!`;
+    if (winner == 'Heroes') {
+        finalScreen.classList.add('heroes-winner');
+    } else {
+        finalScreen.classList.add('enemies-winner');
+    }
+    finalScreen.addEventListener('click', ()=> {
+        location.reload();
+    });
+
+    document.body.appendChild(finalScreen);
+}
 
 // mouseover info ---------------------------------------------------
 
@@ -260,33 +321,45 @@ sprites.forEach(function(sprite) {
         if (objectInfo.lastElementChild) {
             objectInfo.removeChild(objectInfo.lastElementChild);
         }
+
         const unitIndex = checkUnit(event.target.id);
-        const unitStats = document.createElement('div');
 
-        unitStats.className = 'unit';
-        unitStats.innerHTML = `<div class="unit-img">${unitBase[unitIndex].img}</div>`;
-        unitStats.innerHTML += `<div class="unit-name">${unitBase[unitIndex].name}</div>`;
-        unitStats.innerHTML += `<div class="unit-quote">${unitBase[unitIndex].quote}</div>`;
+        if (unitIndex >= 0 && unitIndex < unitBase.length) {
 
-        unitStats.innerHTML += `<div class="unit-level">Level:${unitBase[unitIndex].level}</div>`;
-        unitStats.innerHTML += `<div class="unit-xp">XP:${unitBase[unitIndex].currXp}/${unitBase[unitIndex].maxXp}</div>`;
-        unitStats.innerHTML += `<div class="unit-hp">HP:${unitBase[unitIndex].currHp}/${unitBase[unitIndex].maxHp}</div>`;
+            const unitStats = document.createElement('div');
 
-        unitStats.innerHTML += `<div class="unit-attack">Attack:${unitBase[unitIndex].attack}</div>`;
-        unitStats.innerHTML += `<div class="unit-damage">Damage:${unitBase[unitIndex].damage}</div>`;
-        unitStats.innerHTML += `<div class="unit-hit-chance">Chance to hit:${unitBase[unitIndex].hitChance}%</div>`;
+            unitStats.className = 'unit';
+            unitStats.innerHTML = `<div class="unit-img">${unitBase[unitIndex].img}</div>`;
+            unitStats.innerHTML += `<div class="unit-name">${unitBase[unitIndex].name}</div>`;
+            unitStats.innerHTML += `<div class="unit-quote">${unitBase[unitIndex].quote}</div>`;
 
-        unitStats.innerHTML += `<div class="unit-initiative">Initiative:${unitBase[unitIndex].initiative}</div>`;
-        unitStats.innerHTML += `<div class="unit-reach">Reach:${unitBase[unitIndex].reach}</div>`;
-        unitStats.innerHTML += `<div class="unit-targets">Targets:${unitBase[unitIndex].targets}</div>`;
+            unitStats.innerHTML += `<div class="unit-level">Level:${unitBase[unitIndex].level}</div>`;
+            unitStats.innerHTML += `<div class="unit-xp">XP:${unitBase[unitIndex].currXp}/${unitBase[unitIndex].maxXp}</div>`;
+            unitStats.innerHTML += `<div class="unit-hp">HP:${unitBase[unitIndex].currHp}/${unitBase[unitIndex].maxHp}</div>`;
 
-        objectInfo.appendChild(unitStats);
+            unitStats.innerHTML += `<div class="unit-attack">Attack:${unitBase[unitIndex].attack}</div>`;
+            unitStats.innerHTML += `<div class="unit-damage">Damage:${unitBase[unitIndex].damage}</div>`;
+            unitStats.innerHTML += `<div class="unit-hit-chance">Chance to hit:${unitBase[unitIndex].hitChance}%</div>`;
 
-        objectInfo.className = 'information';
-        objectInfo.style.display = 'block';
+            unitStats.innerHTML += `<div class="unit-initiative">Initiative:${unitBase[unitIndex].initiative}</div>`;
+            unitStats.innerHTML += `<div class="unit-reach">Reach:${unitBase[unitIndex].reach}</div>`;
+            unitStats.innerHTML += `<div class="unit-targets">Targets:${unitBase[unitIndex].targets}</div>`;
+
+            objectInfo.appendChild(unitStats);
+
+            objectInfo.className = 'information';
+            objectInfo.style.display = 'block';
+
+        } else {
+
+            console.error("Error:", unitIndex);
+
+        }
     });
 });
 
 document.addEventListener('click', function() {
     objectInfo.style.display = 'none';
 });
+
+
