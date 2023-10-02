@@ -61,47 +61,11 @@ function generateUnitInformation(value) {
     return units;
 }
 
-function generateUnitBase(value) {
+export function generateUnitBase(value) {
     shuffleArray(personsName);
     shuffleArray(personsQuotes);
     shuffleArray(personsIcons);
     
     const unitsArray = generateUnitInformation(value);
     return unitsArray;
-}
-
-function makeInformationCard(value) {
-
-    let unitBase = generateUnitBase(value);
-
-    const unitCards = [];
-    for (let i = 0; i < value; i++) {
-        const unit = document.createElement('div');
-        unit.className = 'unit';
-        unit.innerHTML = `<div class="unit-img">${unitBase[i].img}</div>`;
-        unit.innerHTML += `<div class="unit-name">${unitBase[i].name}</div>`;
-        unit.innerHTML += `<div class="unit-quote">${unitBase[i].quote}</div>`;
-
-        unit.innerHTML += `<div class="unit-level">Level: ${unitBase[i].level}</div>`;
-        unit.innerHTML += `<div class="unit-xp">XP: ${unitBase[i].currXp}/${unitBase[i].maxXp}</div>`;
-        unit.innerHTML += `<div class="unit-hp">HP: ${unitBase[i].currHp}/${unitBase[i].maxHp}</div>`;
-
-        unit.innerHTML += `<div class="unit-attack">Attack: ${unitBase[i].attack}</div>`;
-        unit.innerHTML += `<div class="unit-damage">Damage: ${unitBase[i].damage}</div>`;
-        unit.innerHTML += `<div class="unit-hit-chance">Chance to hit: ${unitBase[i].hitChance}%</div>`;
-
-        unit.innerHTML += `<div class="unit-initiative">Initiative: ${unitBase[i].initiative}</div>`;
-        unit.innerHTML += `<div class="unit-reach">Reach: ${unitBase[i].reach}</div>`;
-        unit.innerHTML += `<div class="unit-targets">Targets: ${unitBase[i].targets}</div>`;
-
-        unitCards.push(unit);
-    }
-    return [unitCards, unitBase];
-}
-
-export function generateUnitsCardArray(value) {
-
-    const unitCardsArray = makeInformationCard(value);
-
-    return unitCardsArray;
 }

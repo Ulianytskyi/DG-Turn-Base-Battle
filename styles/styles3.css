@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&display=swap');
+
 body {
     padding: 0;
     margin: 0;
@@ -44,12 +46,12 @@ body {
 }
  
 .hero { 
-    background-image: url('LanceKnight_Blue.png'); 
+    background-image: url('../assets/LanceKnight_Blue.png'); 
     background-position: -0px -160px;
 }
 
 .enemy {
-    background-image: url('LanceKnight_Red.png'); 
+    background-image: url('../assets/LanceKnight_Red.png'); 
     background-position: -0px -160px;
     transform: scale3d(-4, 4, 1);    
 }
@@ -71,17 +73,44 @@ body {
 
 .hitted { background-position: -0px -96px; }
 
-.unit-text {
+.die { background-position: -32px -96px; }
+
+.die-status {
     position: absolute;
-    color: aliceblue;
-    font-size: 8px;
-    left: -15px;
-    top: 0px;
+    color: red;
+    font-size: 15px;
+    margin-left: 10px; 
 }
 
-.enemy .unit-text {
+
+.unit-hit-text {
+    position: absolute;
+    font-family: 'Pixelify Sans', cursive;
+    color: red;
+    font-size: 8px;
+    left: 20px;
+    top: 3px;
+}
+
+.enemy .unit-hit-text {
     transform: scale3d(-1, 1, 1); 
 }
+
+.health-bar {
+    width: 50px;
+    height: 5px;
+    background-color: #ccc;
+    border: 1px solid #333;
+    position: relative;
+}
+  
+.health-value {
+    height: 100%;
+    width: 100%;
+    background-color: #ff0800;
+    transition: width 0.3s ease-in-out;
+}
+  
 
 /*  terrain ------------------------------------------------------------------- */
 
@@ -90,7 +119,7 @@ body {
     height: 32px;
     transform: scale(1.4);
     background-size: 794px 1344px;
-    background-image: url('grassland_tiles.png'); 
+    background-image: url('../assets/grassland_tiles.png'); 
 }
 
 #game-board1,
@@ -123,15 +152,10 @@ body {
     display: none;
 }
 
-.information {
-    
-}
-
 .unit {
     position: absolute;
     top: 20px;
     left: 20px;
-    
     height: 330px;
     display: flex;
     flex-direction: column;
@@ -162,3 +186,52 @@ body {
     width: 230px;
     padding: 20px 0 60px;
 }
+
+.unit-level {
+    position: relative;
+    padding: 20px 0 0 0;
+    color: grey
+}
+.unit-xp {
+    position: relative;
+    padding: 5px 0 0 0;
+    color: grey
+}
+.unit-hp {
+    position: relative;
+    padding: 5px 0 0 0;
+}
+.unit-attack {
+    position: relative;
+    padding: 20px 0 0 0;
+    color: grey
+}
+.unit-damage {
+    position: relative;
+    padding: 5px 0 0 0;
+}
+
+.unit-hit-chance {
+    position: relative;
+    padding: 5px 0 0 0;
+}
+
+.unit-initiative {
+    position: relative;
+    padding: 20px 0 0 0;
+    color: grey
+}
+.unit-reach {
+    position: relative;
+    padding: 5px 0 0 0;
+    color: grey
+}
+
+.unit-targets {
+    position: relative;
+    padding: 5px 0 0 0;
+    color: grey
+}
+
+
+
