@@ -35,12 +35,12 @@ function createUnits(value, type) {
 
         const healthBar = document.createElement('div');
         const healthValue = document.createElement('div');
-        healthBar.className = 'health-bar hide';
+        healthBar.className = 'health-bar';
         healthValue.className = 'health-value';
         healthBar.appendChild(healthValue);
        
         const hitText = document.createElement('div');
-        hitText.className = 'unit-hit-text hide';
+        hitText.className = 'unit-hit-text hidden';
         hitText.innerHTML = `0`;
 
         unit1.appendChild(healthBar);
@@ -182,8 +182,10 @@ function unitAttack(selectedUnit1, type, selectedUnit2) {
         if (count < 4) {
             if (count == 2) {
                 selectedUnit2.classList.add('hitted');
-                selectedUnit2.children[1].innerHTML = `-${damageValue}`;
-                selectedUnit2.children[1].classList.remove('hide');
+                let minus = damageValue != 'Miss' ? '-' : '';
+                selectedUnit2.children[1].innerHTML = `${minus}${damageValue}`;
+
+                hitVisibility(selectedUnit2);
             }
             selectedUnit1.className = `sprite ${type} attack${count}`;
             count++;
@@ -194,8 +196,6 @@ function unitAttack(selectedUnit1, type, selectedUnit2) {
             calculateDamage(damageValue, selectedUnit2);
             checkDeath(selectedUnit2);
             clearInterval(timerInterval);
-
-            selectedUnit2.children[1].classList.add('hide');
         }
     }, 300);
 }
@@ -206,12 +206,17 @@ function takeDamageValue(u1) {
     let u1Damage = Math.floor((Math.random() * hitChance) / 100 * u1Attack);
     if (cheatOn) {
         return 100;
-    } else {
+    } else if (!cheatOn && u1Damage > 10) {
         return u1Damage;
+    } else {
+        return 'Miss';
     }
 }
 
 function calculateDamage(damage, u2) {
+    if (damage == 'Miss') {
+        damage = 0;
+    }
     let u2Hp = unitBase[checkUnit(u2.id)].currHp;
     u2Hp -= damage;
     unitBase[checkUnit(u2.id)].currHp = u2Hp;
@@ -275,31 +280,6 @@ function gameOverScreen(winner) {
     document.body.appendChild(finalScreen);
 }
 
-// mouseover info ---------------------------------------------------
-
-const heroElements = document.querySelectorAll('.sprite.hero');
-const enemyElements = document.querySelectorAll('.sprite.enemy');
-
-heroElements.forEach(function(heroElement) {
-    const unitHpBar = heroElement.querySelector('.health-bar');
-    heroElement.addEventListener('mouseenter', function() {
-        unitHpBar.classList.remove('hide');
-    });
-    heroElement.addEventListener('mouseleave', function() {
-        unitHpBar.classList.add('hide');
-    });
-});
-
-enemyElements.forEach(function(enemyElement) {
-    const unitHpBar = enemyElement.querySelector('.health-bar');
-    enemyElement.addEventListener('mouseenter', function() {
-        unitHpBar.classList.remove('hide');
-    });
-    enemyElement.addEventListener('mouseleave', function() {
-        unitHpBar.classList.add('hide');
-    });
-});
-
 // context menu disable --------------------------------------------------
 
 const gameContainer = document.getElementById('game-container');
@@ -362,4 +342,27 @@ document.addEventListener('click', function() {
     objectInfo.style.display = 'none';
 });
 
+// hit animation ---------------------------------------
 
+function hitVisibility(target) {
+    const hitText = target.children[1];
+    hitText.style.opacity = 1;
+    hitText.style.visibility = 'visible';
+    // hitText.style.transform = 'translate(-50%, -50%) translate(-15px, -0px)';
+    hitText.style.left = 30 + 'px';
+    hitText.style.top = 0 + 'px';
+    if (checkUnit(target.id) > 5) {
+        // hitText.style.transform = 'translate(-50%, -50%) translate(27px, -0px)';
+        hitText.style.left = -10 + 'px';
+        hitText.style.top = 0 + 'px';
+    }
+
+    setTimeout(() => {
+        hitText.style.opacity = 0;
+        hitText.style.visibility = 'hidden';
+        // hitText.style.transform = 'translate(0%, 0%) translate(0px, 0px)';
+        hitText.style.left = 0 + 'px';
+        hitText.style.top = 0 + 'px';
+    }, 1000);
+
+}
