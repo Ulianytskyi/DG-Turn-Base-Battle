@@ -56,6 +56,7 @@ function generateUnitInformation(value) {
         units[i].initiative = 60;
         units[i].reach = 'Any unit';
         units[i].targets = 1;
+        units[i].active = true;
         
     }
     return units;

@@ -24,6 +24,12 @@ import { generateUnitBase } from "../scripts/unit-settings.js";
 const unitBase = generateUnitBase(12);
 // console.log(unitBase[0].children[4].innerText);
 
+const moveLogField = document.getElementById('move-log');
+let turn = 0;
+let alive = 6;
+let phases = 1;
+moveLogField.innerText = `Phase: ${phases}`;
+
 // unit generation -------------------------------------------------------
 
 function createUnits(value, type) {
@@ -43,8 +49,13 @@ function createUnits(value, type) {
         hitText.className = 'unit-hit-text hidden';
         hitText.innerHTML = `0`;
 
+        const waitIcon = document.createElement('div');
+        waitIcon.className = 'waiting hidden';
+        waitIcon.innerHTML = '⏱';
+
         unit1.appendChild(healthBar);
         unit1.appendChild(hitText);
+        unit1.appendChild(waitIcon);
         unit1.className = `sprite ${type}`;
         unit1.id = `${type}` + (i + 1 + k);
         unit1.style.top = unitCoords[i].x + 'px';
@@ -105,21 +116,36 @@ function handleHeroClick(event) {
         if (selectedUnit1 === null) {
             selectedUnit1 = event.target;
             selectedUnit1.classList.add('selected');
+
+            if (!unitBase[checkUnit(selectedUnit1.id)].active && selectedUnit2 === null) {
+                selectedUnit1.classList.remove('selected');
+                selectedUnit1 = null;
+            }
+
         } else if (selectedUnit1 == event.target) {
-        selectedUnit1.classList.remove('selected');
-        selectedUnit1 = null;
+            selectedUnit1.classList.remove('selected');
+            selectedUnit1 = null;
         } else {
             selectedUnit1.classList.remove('selected');
             selectedUnit1 = event.target;
             selectedUnit1.classList.add('selected');
         }
-        
-        if (selectedUnit1 !== null && selectedUnit2 !== null && !selectedUnit1.classList.contains('die') && unitBase[checkUnit(selectedUnit1.id)].currHp !== 0) {
-            selectedUnit1.classList.add('selected');
-            if (selectedUnit1 !== null && selectedUnit2 !== null) {
-                let type = checkUnitType(selectedUnit2);
-                battle(selectedUnit2, type, selectedUnit1);
-            }
+
+        if (selectedUnit1 !== null && selectedUnit2 !== null && 
+            !selectedUnit1.classList.contains('die') && 
+            unitBase[checkUnit(selectedUnit1.id)].currHp !== 0) {
+            if (
+                ((selectedUnit1.id == 'hero1' && selectedUnit2.id == 'enemy3') || 
+                (selectedUnit1.id == 'hero3' && selectedUnit2.id == 'enemy1')) &&
+                unitBase[1].currHp !== 0
+                ) {
+                    selectedUnit1.classList.remove('selected');
+                    selectedUnit1 = null;
+            } else {
+                    selectedUnit1.classList.add('selected');
+                    let type = checkUnitType(selectedUnit2);
+                    battle(selectedUnit2, type, selectedUnit1);  
+            }     
         }
     }
 }
@@ -129,6 +155,12 @@ function handleEnemyClick(event) {
         if (selectedUnit2 === null) {
             selectedUnit2 = event.target;
             selectedUnit2.classList.add('selected');
+            
+            if (!unitBase[checkUnit(selectedUnit2.id)].active && selectedUnit1 === null) {
+                selectedUnit2.classList.remove('selected');
+                selectedUnit2 = null;
+            }
+
         } else if (selectedUnit2 == event.target) {
             selectedUnit2.classList.remove('selected');
             selectedUnit2 = null;
@@ -138,9 +170,18 @@ function handleEnemyClick(event) {
             selectedUnit2.classList.add('selected');
         }
 
-        if (selectedUnit2 !== null && selectedUnit1 !== null && !selectedUnit2.classList.contains('die') && unitBase[checkUnit(selectedUnit2.id)].currHp !== 0) {
-            selectedUnit2.classList.add('selected');
-            if (selectedUnit2 !== null && selectedUnit1 !== null) {
+        if (selectedUnit2 !== null && selectedUnit1 !== null && 
+            !selectedUnit2.classList.contains('die') && 
+            unitBase[checkUnit(selectedUnit2.id)].currHp !== 0) {
+            if (
+                ((selectedUnit1.id == 'hero1' && selectedUnit2.id == 'enemy3') || 
+                (selectedUnit1.id == 'hero3' && selectedUnit2.id == 'enemy1')) &&
+                unitBase[7].currHp !== 0
+                ) {
+                selectedUnit2.classList.remove('selected');
+                selectedUnit2 = null;
+            } else {
+                selectedUnit2.classList.add('selected');
                 let type = checkUnitType(selectedUnit1);
                 battle(selectedUnit1, type, selectedUnit2);
             }
@@ -168,10 +209,19 @@ function checkUnitType(eventTarget) {
     }
 }
 
-function battle(selectedUnit1, type, selectedUnit2) {
+function battle(attackUnit, type, defenceUnit) {
     disabledMove = true;
-    unitAttack(selectedUnit1, type, selectedUnit2);
+    unitAttack(attackUnit, type, defenceUnit);
     setTimeout(clearSelection, 2000);
+    unitBase[checkUnit(attackUnit.id)].active = false;
+    turn++;
+
+    setTimeout(() => {
+        attackUnit.children[2].style.visibility = 'visible';
+    }, 2000);
+    setTimeout(() => {
+        checkTurns();
+    }, 3000);
 }
 
 function unitAttack(selectedUnit1, type, selectedUnit2) {
@@ -192,7 +242,6 @@ function unitAttack(selectedUnit1, type, selectedUnit2) {
         } else {
             selectedUnit1.classList.remove('attack3');
             selectedUnit2.classList.remove('hitted');
-            
             calculateDamage(damageValue, selectedUnit2);
             checkDeath(selectedUnit2);
             clearInterval(timerInterval);
@@ -233,44 +282,61 @@ function checkDeath(u2) {
     if (unitBase[checkUnit(u2.id)].currHp <= 0) {
         unitBase[checkUnit(u2.id)].currHp = 0;
         u2.classList.add('die');
+        u2.children[2].style.visibility = 'hidden';
         unitBase[checkUnit(u2.id)].img = '☠️';
         unitBase[checkUnit(u2.id)].name = `${unitBase[checkUnit(u2.id)].name} <span class='die-status'>[dead]</span>`;
         
         if (checkUnit(u2.id) < 6) {
-            heroPoints -= 1;
-            console.log('Hero Points', heroPoints);
+            heroPoints--;
         } else {
-            enemyPoints -= 1;
-            console.log('Enemy Points', enemyPoints);
+            enemyPoints--;
         }
 
+        alive--;
+
         if (heroPoints == 0) {
-            gameOverScreen('Enemies');
-            enemies.forEach(enemy => {
-                if (!enemy.classList.contains('die') && unitBase[checkUnit(enemy.id)].currHp !== 0) {
-                    enemy.classList.add('win-pose');
-                    enemy.style.scale = 1.3;
-                }
-            });
+            gameOverScreen(enemies);
         } else if (enemyPoints == 0) {
-            gameOverScreen('Heroes');
-            heroes.forEach(hero => {
-                if (!hero.classList.contains('die') && unitBase[checkUnit(hero.id)].currHp !== 0) {
-                    hero.classList.add('win-pose');
-                    hero.style.scale = 1.3;
-                }
-            });
+            gameOverScreen(heroes);
         }
     }
 }
 
-function gameOverScreen(winner) {
+function checkTurns() {
+    console.log(turn);
+    if (turn == alive) {
+        turn = 0;
+        phases++;
+
+        unitBase.forEach(unit => {
+            unit.active = true;
+        })
+        waitingVisible();
+    }
+    moveLogField.innerText = `Phase: ${phases}`;
+}
+
+function waitingVisible() {
+    heroes.forEach(hero => {
+        hero.children[2].style.visibility = 'hidden';
+    });
+    
+    enemies.forEach(enemy => {
+        enemy.children[2].style.visibility = 'hidden';
+    });    
+}
+
+
+function gameOverScreen(winnerName) {
+    
+    const winner = winnerName == heroes ? 'heroes' : 'enemies';
+    
     const finalScreen = document.createElement('div');
     finalScreen.id = 'final-screen';
     finalScreen.innerHTML = `${winner} <br>win!`;
-    if (winner == 'Heroes') {
+    if (winner == 'heroes') {
         finalScreen.classList.add('heroes-winner');
-    } else {
+    } else if (winner == 'enemies') {
         finalScreen.classList.add('enemies-winner');
     }
     finalScreen.addEventListener('click', ()=> {
@@ -278,6 +344,17 @@ function gameOverScreen(winner) {
     });
 
     document.body.appendChild(finalScreen);
+
+    winPose(winnerName);
+}
+
+function winPose(winner) {
+    winner.forEach(unit => {
+        if (!unit.classList.contains('die') && unitBase[checkUnit(unit.id)].currHp !== 0) {
+            unit.classList.add('win-pose');
+            unit.style.scale = 1.3;
+        }
+    });
 }
 
 // context menu disable --------------------------------------------------
@@ -363,6 +440,11 @@ function hitVisibility(target) {
         // hitText.style.transform = 'translate(0%, 0%) translate(0px, 0px)';
         hitText.style.left = 0 + 'px';
         hitText.style.top = 0 + 'px';
+
     }, 1000);
 
 }
+
+// ----------------------
+
+

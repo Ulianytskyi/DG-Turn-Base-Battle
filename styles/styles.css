@@ -282,5 +282,19 @@ body {
 
 /* -------------------------- */
 
+.waiting {
+    position: absolute;
+    top: 18px;
+    left: 5px;
+    font-size: 5px;
+    
+}
+.enemy .waiting {
+    left: 21px;
+}
 
-
+#move-log {
+    position: absolute;
+    top: 15px;
+    left: 120px;
+}
