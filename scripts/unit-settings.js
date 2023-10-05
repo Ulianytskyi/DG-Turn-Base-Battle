@@ -57,6 +57,7 @@ function generateUnitInformation(value) {
         units[i].reach = 'Any unit';
         units[i].targets = 1;
         units[i].active = true;
+        units[i].side = null;
         
     }
     return units;

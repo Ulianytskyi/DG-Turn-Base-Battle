@@ -266,6 +266,7 @@ body {
     justify-content: center;
     font-weight: bold;
     font-family: 'Pixelify Sans', cursive;
+    z-index: 10;
     /* display: none; */
 }
 
@@ -278,6 +279,29 @@ body {
     background-color:burlywood;
     color: red;
     cursor: pointer;
+}
+
+/* -------------------------- */
+
+#phase-banner {
+    position: absolute;
+    transform: translate(-50%, 50%);
+    /*top: 40%;*/
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    border-radius: 150px;
+    font-size: 50px;
+    text-transform: uppercase;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: 'Pixelify Sans', cursive;
+    color: red;
+    opacity: 0;
+    transition: opacity 2s, transform 2s;
 }
 
 /* -------------------------- */
