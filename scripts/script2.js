@@ -80,113 +80,23 @@ export function checkUnit(unit) {
 
 // battle -----------------------------------------------------------------
 
+const heroes = document.querySelectorAll('.hero');
+const enemies = document.querySelectorAll('.enemy');
 
-
-const allUnitsArray = document.querySelectorAll('.sprite');
-
+let selectedUnit1 = null;
+let selectedUnit2 = null;
 let disabledMove = false;
-
-let unitHeroSelected = null;
-let unitEnemySelected = null;
 let heroTurn = true;
-let enemyTurn = false;
-let actionPointsHero = 3;
-let actionPointsEnemy = 3;
 
-allUnitsArray.forEach(unit => {
-    unit.addEventListener('click', handleUnitClick);
-    if (unit.classList.contains('hero')) {
-        unitBase[checkUnit(unit.id)].side = 'Hero';
-    } else {
-        unitBase[checkUnit(unit.id)].side = 'Enemy';
-    }
+heroes.forEach(hero => {
+    hero.addEventListener('click', handleHeroClick);
+    unitBase[checkUnit(hero.id)].side = 'Hero';
 });
 
-function handleUnitClick(event) {
-    // console.log(event.target);
-
-    if (!disabledMove) {
-        if (event.target.classList.contains('hero')) {
-
-            if (unitHeroSelected === null) {
-                unitHeroSelected = event.target;
-                unitHeroSelected.classList.add('selected');
-
-                if (!unitBase[checkUnit(unitHeroSelected.id)].active && unitEnemySelected === null) {
-                    unitHeroSelected.classList.remove('selected');
-                    unitHeroSelected = null;
-                }
-
-            } else if (unitHeroSelected == event.target) {
-                unitHeroSelected.classList.remove('selected');
-                unitHeroSelected = null;
-            } else {
-                unitHeroSelected.classList.remove('selected');
-                unitHeroSelected = event.target;
-                unitHeroSelected.classList.add('selected');
-            }
-
-            if (unitHeroSelected !== null && unitEnemySelected !== null && 
-                !unitHeroSelected.classList.contains('die') && 
-                unitBase[checkUnit(unitHeroSelected.id)].currHp !== 0) {
-                if (
-                    ((unitHeroSelected.id == 'hero1' && unitEnemySelected.id == 'enemy3') || 
-                    (unitHeroSelected.id == 'hero3' && unitEnemySelected.id == 'enemy1')) &&
-                    unitBase[1].currHp !== 0
-                    ) {
-                        unitHeroSelected.classList.remove('selected');
-                        unitHeroSelected = null;
-                } else {
-                    unitHeroSelected.classList.add('selected');
-                        let type = checkUnitType(unitEnemySelected);
-                        battle(unitEnemySelected, type, unitHeroSelected); 
-                }     
-                
-            }
-
-
-        } else if (event.target.classList.contains('enemy')) {
-
-            if (unitEnemySelected === null) {
-                unitEnemySelected = event.target;
-                unitEnemySelected.classList.add('selected');
-
-                if (!unitBase[checkUnit(unitEnemySelected.id)].active && unitHeroSelected === null) {
-                    unitEnemySelected.classList.remove('selected');
-                    unitEnemySelected = null;
-                }
-
-            } else if (unitEnemySelected == event.target) {
-                unitEnemySelected.classList.remove('selected');
-                unitEnemySelected = null;
-            } else {
-                unitEnemySelected.classList.remove('selected');
-                unitEnemySelected = event.target;
-                unitEnemySelected.classList.add('selected');
-            }
-
-            if (unitEnemySelected !== null && unitHeroSelected !== null && 
-                !unitEnemySelected.classList.contains('die') && 
-                unitBase[checkUnit(unitEnemySelected.id)].currHp !== 0) {
-                if (
-                    ((unitEnemySelected.id == 'hero1' && unitHeroSelected.id == 'enemy3') || 
-                    (unitEnemySelected.id == 'hero3' && unitHeroSelected.id == 'enemy1')) &&
-                    unitBase[1].currHp !== 0
-                    ) {
-                        unitEnemySelected.classList.remove('selected');
-                        unitEnemySelected = null;
-                } else {
-                    unitEnemySelected.classList.add('selected');
-                        let type = checkUnitType(unitHeroSelected);
-                        battle(unitHeroSelected, type, unitEnemySelected);
-                }     
-                
-            }
-
-        }
-
-    }
-}
+enemies.forEach(enemy => {
+    enemy.addEventListener('click', handleEnemyClick);
+    unitBase[checkUnit(enemy.id)].side = 'Enemy';
+});
 
 function checkActive(text) {
     let activeCounter = 0;
@@ -204,14 +114,97 @@ function checkActive(text) {
 }
 
 
-function clearSelection() {
-    if (unitHeroSelected !== null) {
-        unitHeroSelected.classList.remove('selected');
-        unitHeroSelected = null;
+function handleHeroClick(event) {
+    // checkActive('Hero');
+    if (!disabledMove && heroTurn && !event.target.classList.contains('die')) {
+        if (selectedUnit1 === null) {
+            selectedUnit1 = event.target;
+            selectedUnit1.classList.add('selected');
+
+            if (!unitBase[checkUnit(selectedUnit1.id)].active && selectedUnit2 === null) {
+                selectedUnit1.classList.remove('selected');
+                selectedUnit1 = null;
+            }
+
+        } else if (selectedUnit1 == event.target) {
+            selectedUnit1.classList.remove('selected');
+            selectedUnit1 = null;
+        } else {
+            selectedUnit1.classList.remove('selected');
+            selectedUnit1 = event.target;
+            selectedUnit1.classList.add('selected');
+        }
+
+        if (selectedUnit1 !== null && selectedUnit2 !== null && 
+            !selectedUnit1.classList.contains('die') && 
+            unitBase[checkUnit(selectedUnit1.id)].currHp !== 0) {
+            if (
+                ((selectedUnit1.id == 'hero1' && selectedUnit2.id == 'enemy3') || 
+                (selectedUnit1.id == 'hero3' && selectedUnit2.id == 'enemy1')) &&
+                unitBase[1].currHp !== 0
+                ) {
+                    selectedUnit1.classList.remove('selected');
+                    selectedUnit1 = null;
+            } else {
+                    selectedUnit1.classList.add('selected');
+                    let type = checkUnitType(selectedUnit2);
+                    battle(selectedUnit2, type, selectedUnit1);  
+            }     
+        }
+        heroTurn = false;
     }
-    if (unitEnemySelected !== null) {
-        unitEnemySelected.classList.remove('selected');
-        unitEnemySelected = null;
+}
+
+function handleEnemyClick(event) {
+    // checkActive('Enemy');
+    if (!disabledMove && !heroTurn && !event.target.classList.contains('die')) {
+        if (selectedUnit2 === null) {
+            selectedUnit2 = event.target;
+            selectedUnit2.classList.add('selected');
+            
+            if (!unitBase[checkUnit(selectedUnit2.id)].active && selectedUnit1 === null) {
+                selectedUnit2.classList.remove('selected');
+                selectedUnit2 = null;
+            }
+
+        } else if (selectedUnit2 == event.target) {
+            selectedUnit2.classList.remove('selected');
+            selectedUnit2 = null;
+        } else {
+            selectedUnit2.classList.remove('selected');
+            selectedUnit2 = event.target;
+            selectedUnit2.classList.add('selected');
+        }
+
+        if (selectedUnit2 !== null && selectedUnit1 !== null && 
+            !selectedUnit2.classList.contains('die') && 
+            unitBase[checkUnit(selectedUnit2.id)].currHp !== 0) {
+            if (
+                ((selectedUnit1.id == 'hero1' && selectedUnit2.id == 'enemy3') || 
+                (selectedUnit1.id == 'hero3' && selectedUnit2.id == 'enemy1')) &&
+                unitBase[7].currHp !== 0
+                ) {
+                selectedUnit2.classList.remove('selected');
+                selectedUnit2 = null;
+            } else {
+                selectedUnit2.classList.add('selected');
+                let type = checkUnitType(selectedUnit1);
+                battle(selectedUnit1, type, selectedUnit2);
+            }
+        }
+        heroTurn = true;
+    }
+
+}
+
+function clearSelection() {
+    if (selectedUnit1 !== null) {
+        selectedUnit1.classList.remove('selected');
+        selectedUnit1 = null;
+    }
+    if (selectedUnit2 !== null) {
+        selectedUnit2.classList.remove('selected');
+        selectedUnit2 = null;
     }
     disabledMove = false;
 }
@@ -331,11 +324,23 @@ function checkTurns() {
 
     if (activeCounter == 6) {
 
-        allUnitsArray.forEach(unit => {
-            if (!unit.classList.contains('die')) {
-                unitBase[checkUnit(unit.id)].active = true;
+
+        for (let i = 0; i < unitBase.length; i++) {
+            if (i < 6) {
+                heroes.forEach(hero => {
+                    if (!hero.classList.contains('die')) {
+                        unitBase[i].active = true;
+                    }
+                });
+            } else {
+                enemies.forEach(enemy => {
+                    if (!enemy.classList.contains('die')) {
+                        unitBase[i].active = true;
+                    }
+                });    
             }
-        });
+        }
+
 
         waitingVisible();
         newPhase();
@@ -344,11 +349,14 @@ function checkTurns() {
     moveLogField.innerText = `Phase: ${phases}`;
 }
 
-// timer visible and new phase ------------------------------------------------------
+
 
 function waitingVisible() {
-    allUnitsArray.forEach(unit => {
-        unit.children[2].style.visibility = 'hidden';
+    heroes.forEach(hero => {
+        hero.children[2].style.visibility = 'hidden';
+    });
+    enemies.forEach(enemy => {
+        enemy.children[2].style.visibility = 'hidden';
     });    
 }
 
@@ -365,8 +373,6 @@ function newPhase() {
         newPahseBanner.style.visibility = 'hidden';
     }, 2000);
 }
-
-// game over ---------------------------------------------------------
 
 function gameOverScreen(winnerName) {
     
@@ -424,4 +430,7 @@ function hitVisibility(target) {
     }, 1000);
 
 }
+
+// ----------------------
+
 
